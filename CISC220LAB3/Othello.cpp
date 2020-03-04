@@ -46,7 +46,6 @@ int main() {
 	cout << "Size is " << game->size << endl;
 	//makeBoard(game, 0, true);
 
-
 //test for makeBoard2
 //	char arr[5] = {'3','3','3','3','3'};
 //	makeBoard2(arr,0,5);
@@ -63,18 +62,30 @@ void getSize(int &size) {
 
 }
 
-void makeBoard(GameBoard *game, int ct, bool flag) {
-
-}
+//void makeBoard(GameBoard *game, int ct, bool flag) {
+//	if (ct == 0) {
+//		game -> board
+//	} else {
+//		int **newBoard = new int*[n];
+//		for (int i = 0; i < n; i++) {
+//			newBoard[i] = new int[n];
+//		}
+//
+//		for (int i = 0; i < n; i++) {
+//			for (int j = 0; j < n; j++) {
+//				newBoard[i][j] = 0;
+//			}
+//		}
+//		return newBoard;
+//
+//	}
+//
+//}
 
 void makeBoard2(char arr[], int ct, int size) {
 	if (ct == size) {
-		//cout << "inside if";
 	} else {
-		//cout << "inside else"<<endl;
-		//cout << ct << endl;
 		arr[ct] = '-';
-		//ct++;
 		makeBoard2(arr, ct += 1, size);
 	}
 
