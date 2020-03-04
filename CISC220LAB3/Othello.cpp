@@ -21,7 +21,6 @@
 ////	cout << func(7);
 ////	return 0;
 ////}
-
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -34,28 +33,50 @@ struct GameBoard {
 };
 
 void getSize(int &size);
+void makeBoard(GameBoard *game, int ct, bool flag);
+void makeBoard2(char arr[], int ct, int size);
 
 int main() {
 	srand(time(NULL));
 	int size = 0;
-	getSize(size);  // gets the size for the game board.  Note we only do this once for this game.
-	cout << size;
+	getSize(size); // gets the size for the game board.  Note we only do this once for this game.
+	GameBoard *game = new GameBoard; // places a gameBoard struct object on the heap.
+	game->size = size;  //sets the gameboard's size
+	game->totalct = 4;  // the 4 middle squares are taken
+	cout << "Size is " << game->size << endl;
+	//makeBoard(game, 0, true);
+
+
+//test for makeBoard2
+//	char arr[5] = {'3','3','3','3','3'};
+//	makeBoard2(arr,0,5);
+//	for (int i = 5 - 1; i >= 0; i--){
+//	    cout << arr[i]<<endl;;
+//	}
 }
-void getSize(int &size){
-	int tempSize = rand()%15+5;
-	if(tempSize%2 != 0){
-		tempSize ++;
+void getSize(int &size) {
+	int tempSize = rand() % 15 + 5;
+	if (tempSize % 2 != 0) {
+		tempSize++;
 	}
 	size = tempSize;
 
 }
 
+void makeBoard(GameBoard *game, int ct, bool flag) {
 
+}
 
+void makeBoard2(char arr[], int ct, int size) {
+	if (ct == size) {
+		//cout << "inside if";
+	} else {
+		//cout << "inside else"<<endl;
+		//cout << ct << endl;
+		arr[ct] = '-';
+		//ct++;
+		makeBoard2(arr, ct += 1, size);
+	}
 
-
-
-
-
-
+}
 
