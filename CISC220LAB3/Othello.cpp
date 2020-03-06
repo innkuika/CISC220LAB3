@@ -5,22 +5,6 @@
  *      Author: jessicawu
  */
 
-//Problem 0
-//#include <iostream>
-//#include <stdlib.h>
-//using namespace std;
-//
-////int func(int k) {
-////	if (k <= 2) {
-////		return 1;
-////	}
-////	return (func(k - 1) + func(k - 2));
-////}
-////
-////int main() {
-////	cout << func(7);
-////	return 0;
-////}
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -35,6 +19,7 @@ struct GameBoard {
 void getSize(int &size);
 void makeBoard(GameBoard *game, int ct, bool flag);
 void makeBoard2(char arr[], int ct, int size);
+void printBoard(char **newBoard, int n);
 
 int main() {
 	srand(time(NULL));
@@ -44,7 +29,9 @@ int main() {
 	game->size = size;  //sets the gameboard's size
 	game->totalct = 4;  // the 4 middle squares are taken
 	cout << "Size is " << game->size << endl;
-	//makeBoard(game, 0, true);
+	makeBoard(game, 0, true);
+	printBoard(game->board, game->size);
+
 
 //test for makeBoard2
 //	char arr[5] = {'3','3','3','3','3'};
@@ -62,28 +49,38 @@ void getSize(int &size) {
 
 }
 
-//void makeBoard(GameBoard *game, int ct, bool flag) {
-//	if (ct == 0) {
-//		game -> board
-//	} else {
-//		int **newBoard = new int*[n];
-//		for (int i = 0; i < n; i++) {
-//			newBoard[i] = new int[n];
-//		}
-//
-//		for (int i = 0; i < n; i++) {
-//			for (int j = 0; j < n; j++) {
-//				newBoard[i][j] = 0;
-//			}
-//		}
-//		return newBoard;
-//
-//	}
-//
-//}
+void printBoard(char **newBoard, int n) {
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			if (newBoard[i][j] == 0) {
+				cout << " " << "\t";
+			} else {
+				cout << newBoard[i][j] << "\t";
+			}
+
+		}
+		cout << endl;
+	}
+}
+
+void makeBoard(GameBoard *game, int ct, bool flag) {
+	if (flag) {
+		game->board = new char*[game->size];
+		flag = false;
+	}
+	if (ct == game->size) {
+		return;
+	} else {
+		game->board[ct] = new char[game->size];
+		makeBoard2(game->board[ct], 0, game->size);
+		makeBoard(game, ct += 1, flag);
+	}
+}
 
 void makeBoard2(char arr[], int ct, int size) {
 	if (ct == size) {
+		return;
 	} else {
 		arr[ct] = '-';
 		makeBoard2(arr, ct += 1, size);
