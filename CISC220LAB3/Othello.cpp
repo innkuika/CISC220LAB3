@@ -2,7 +2,7 @@
  * Othello.cpp
  *
  *  Created on: Mar 4, 2020
- *      Author: jessicawu
+ *  Author: jessicawu
  */
 
 #include <iostream>
@@ -41,7 +41,7 @@ int main() {
 //	}
 }
 void getSize(int &size) {
-	int tempSize = rand() % 15 + 5;
+	int tempSize = rand() % 5 + 5;
 	if (tempSize % 2 != 0) {
 		tempSize++;
 	}
@@ -49,28 +49,28 @@ void getSize(int &size) {
 
 }
 
-void printFirstRow(int size, int ct){
-	if(ct == 0){
-		cout<<" \t";
+void printFirstRow(int size, int ct) {
+	if (ct == 0) {
+		cout << " \t";
 	}
-	if(ct == size){
-		cout<<endl;
+	if (ct == size) {
+		cout << endl;
 		return;
-	}else{
-		cout<<ct<<" \t";
-		printFirstRow(size, ct+=1);
+	} else {
+		cout << ct << " \t";
+		printFirstRow(size, ct += 1);
 	}
 }
 
 void printBoard(GameBoard *game, int ct) {
-	if(ct == 0){
-		printFirstRow(game->size,ct);
+	if (ct == 0) {
+		printFirstRow(game->size, ct);
 	}
 	if (ct == game->size) {
 		return;
 	} else {
-		cout <<ct << "\t";
-		printBoard2(game->board[ct],0,game->size);
+		cout << ct << "\t";
+		printBoard2(game->board[ct], 0, game->size);
 		printBoard(game, ct += 1);
 	}
 }
@@ -95,6 +95,14 @@ void makeBoard(GameBoard *game, int ct, bool flag) {
 		return;
 	} else {
 		game->board[ct] = new char[game->size];
+		if (ct == game->size / 2) {
+			game->board[ct][ct - 1] = 'O';
+			game->board[ct][ct] = 'X';
+		}
+		if (ct == (game->size / 2) - 1) {
+			game->board[ct][ct + 1] = 'O';
+			game->board[ct][ct] = 'X';
+		}
 		makeBoard2(game->board[ct], 0, game->size);
 		makeBoard(game, ct += 1, flag);
 	}
@@ -104,7 +112,9 @@ void makeBoard2(char arr[], int ct, int size) {
 	if (ct == size) {
 		return;
 	} else {
-		arr[ct] = '-';
+		if (arr[ct] != 'X' &&arr[ct]!= 'O' ) {
+			arr[ct] = '-';
+		}
 		makeBoard2(arr, ct += 1, size);
 	}
 
