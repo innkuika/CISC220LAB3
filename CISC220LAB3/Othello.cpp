@@ -10,7 +10,6 @@
 #include <time.h>
 #include <stdio.h>
 
-
 #include <signal.h>
 #include <float.h>
 using namespace std;
@@ -28,6 +27,7 @@ void printBoard(GameBoard *game, int ct);
 void printBoard2(char arr[], int ct, int size);
 char ckwin(GameBoard *game);
 int countRow(char arr[], char c, int ct, int size, int num);
+bool compplacepiece(GameBoard *game);
 
 int main() {
 	srand(time(NULL));
@@ -53,23 +53,30 @@ int main() {
 int countRow(char arr[], char c, int size, int ct, int num) {
 	if (ct == size) {
 		cout << "inside if" << endl;
-		cout <<"num\t" <<num << endl;
+		cout << "num\t" << num << endl;
 		return num;
 	} else {
 		if (arr[ct] == c) {
 			cout << "inside else" << endl;
-			cout <<"num\t" <<num << endl;
-			cout <<"ct\t" <<ct << endl;
-			cout <<"size\t" <<size << endl;
+			cout << "num\t" << num << endl;
+			cout << "ct\t" << ct << endl;
+			cout << "size\t" << size << endl;
 
 			num++;
 		}
-		countRow(arr, c, size,ct += 1, num);
+		countRow(arr, c, size, ct += 1, num);
 	}
 
 }
-int countSquare(GameBoard *game, char c) {
-
+int countSquare(GameBoard *game, char c, int size, int ct, int num) {
+	if (ct == size) {
+		cout << "inside if" << endl;
+		cout << "num\t" << num << endl;
+		return num;
+	} else {
+		num += countRow(game->board[ct], game->p, game->size, 0, 0);
+		countSquare(game, c, size, ct += 1, num);
+	}
 }
 char ckwin(GameBoard *game) {
 	int x;
