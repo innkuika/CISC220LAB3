@@ -26,8 +26,7 @@ struct Square {
 	int y; //y coordinate
 	int xs; //x step
 	int ys; //y step
-	Square *pre;
-	Square *next;
+	bool flip; //T if can flip
 };
 
 void getSize(int &size);
@@ -57,6 +56,7 @@ int main() {
 
 	game->p = 'X';
 	placepieceperson(game);
+	printBoard(game, 0);
 
 //testing code
 
@@ -79,6 +79,56 @@ int main() {
 //	cout << "ct\t" << ct << endl;
 //	cout << "size\t" << size << endl;
 	return 0;
+}
+void setArrToInitial(Square *start, Square arr[]) {
+	arr[0].p = start->p;
+	arr[0].x = start->x - 1;
+	arr[0].y = start->y - 1;
+	arr[0].xs = -1;
+	arr[0].ys = -1;
+
+	arr[1].p = start->p;
+	arr[1].x = start->x - 1;
+	arr[1].y = start->y;
+	arr[1].xs = -1;
+	arr[1].ys = 0;
+
+	arr[2].p = start->p;
+	arr[2].x = start->x - 1;
+	arr[2].y = start->y + 1;
+	arr[2].xs = -1;
+	arr[2].ys = 1;
+
+	arr[3].p = start->p;
+	arr[3].x = start->x;
+	arr[3].y = start->y - 1;
+	arr[3].xs = 0;
+	arr[3].ys = -1;
+
+	arr[4].p = start->p;
+	arr[4].x = start->x;
+	arr[4].y = start->y + 1;
+	arr[4].xs = 0;
+	arr[4].ys = 1;
+
+	arr[5].p = start->p;
+	arr[5].x = start->x + 1;
+	arr[5].y = start->y - 1;
+	arr[5].xs = 1;
+	arr[5].ys = -1;
+
+	arr[6].p = start->p;
+	arr[6].x = start->x + 1;
+	arr[6].y = start->y;
+	arr[6].xs = 1;
+	arr[6].ys = 0;
+
+	arr[7].p = start->p;
+	arr[7].x = start->x + 1;
+	arr[7].y = start->y + 1;
+	arr[7].xs = 1;
+	arr[7].ys = 1;
+
 }
 
 Square* buildArray(Square *start) {
@@ -131,51 +181,82 @@ Square* buildArray(Square *start) {
 	arr[7].xs = 1;
 	arr[7].ys = 1;
 
+	arr[0].flip = false;
+	arr[1].flip = false;
+	arr[2].flip = false;
+	arr[3].flip = false;
+	arr[4].flip = false;
+	arr[5].flip = false;
+	arr[6].flip = false;
+	arr[7].flip = false;
+
+
 	return arr;
 
 }
 
-int getFlipNumOneDirec(Square *first, GameBoard *game, int num, int ct) {
+void flipOneDirec(Square *first, GameBoard *game) {
+	if (game->board[first->x][first->y] == first->p) {
+		cout<<"test3"<<endl;
+		return;
+
+	} else {
+		cout<<"test1"<<endl;
+		cout<<game->board[first->x][first->y]<<endl;
+		game->board[first->x][first->y] = first->p;
+		first->x += first->xs;
+		first->y += +first->ys;
+
+		return flipOneDirec(first, game);
+	}
+}
+
+void flipAllDirec(Square *arr, GameBoard *game, int ct) {
+	if (ct == 8) {
+		return;
+	} else {
+		cout<<ct<<"flip: " <<arr[ct].flip<<endl;
+		if (arr[ct].flip) {
+			flipOneDirec(&arr[ct], game);
+		}
+
+		return flipAllDirec(arr, game, ct += 1);
+	}
+
+}
+int getFlipNumOneDirec(Square *first, GameBoard *game, int num) {
 	if (first->x < 0 || first->x >= game->size || first->y < 0
 			|| first->y >= game->size
 			|| first->p == game->board[first->x][first->y]
 			|| game->board[first->x][first->y] == '-') {
-		cout << "x step: " << first->xs << endl;
-		cout << "y step: " << first->ys << endl;
-
-		cout << "first p: " << first->p << endl;
-		cout << "game->board: " << game->board[first->x][first->y] << endl;
 
 		if (first->x < 0 || first->x >= game->size || first->y < 0
 				|| first->y >= game->size) {
 			num = 0;
+		}
+		if(first->p == game->board[first->x][first->y]) {
+			first->flip = true;
 		}
 		return num;
 	} else {
 		first->x += first->xs;
 		first->y += +first->ys;
 		num += 1;
-		cout << "num: " << num << endl;
-		return getFlipNumOneDirec(first, game, num, ct += 1);
+
+		return getFlipNumOneDirec(first, game, num);
 	}
 }
 
 int getFlipNum(Square arr[], GameBoard *game, int num, int ct) {
 	if (ct == 8) {
-		cout << "inside if" << endl;
-		cout << "num\t" << num << endl;
-		cout << "ct\t" << ct << endl;
 		return num;
 	} else {
-		cout << "inside else" << endl;
-		cout << "direction: " << ct << endl;
-		cout << "num total: " << num << endl;
-		num += getFlipNumOneDirec(&arr[ct], game, 0, 0);
+		num += getFlipNumOneDirec(&arr[ct], game, 0);
 		return getFlipNum(arr, game, num, ct += 1);
 	}
 }
 
-int flipPieceNum(GameBoard *game, int x, int y) {
+int flipPieceNum(GameBoard *game, int x, int y, bool flipflag) {
 	Square *start = new Square;
 	start->p = game->p;
 	start->x = x;
@@ -184,8 +265,14 @@ int flipPieceNum(GameBoard *game, int x, int y) {
 
 	int num = getFlipNum(arr, game, 0, 0);
 
-	return num;
+	if (flipflag && num != 0) {
 
+		setArrToInitial(start, arr);
+		game->board[x][y] = game->p;
+		flipAllDirec(arr, game, 0);
+		cout<<"test2"<<endl;
+	}
+	return num;
 }
 
 bool placepieceperson(GameBoard *game) {
@@ -200,13 +287,14 @@ bool placepieceperson(GameBoard *game) {
 		cout << game->p << " forfeits turn" << endl;
 		return false;
 	}
-	int num = flipPieceNum(game, x, y);
+	int num = flipPieceNum(game, x, y, true);
 	cout << num << endl;
 
 	if (num == 0) {
 		cout << game->p << " forfeits turn" << endl;
 		return false;
 	} else {
+
 		return true;
 	}
 
