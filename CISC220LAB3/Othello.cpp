@@ -19,7 +19,8 @@ struct GameBoard {
 void getSize(int &size);
 void makeBoard(GameBoard *game, int ct, bool flag);
 void makeBoard2(char arr[], int ct, int size);
-void printBoard(char **newBoard, int n);
+void printBoard(GameBoard *game, int ct);
+void printBoard2(char arr[], int ct, int size);
 
 int main() {
 	srand(time(NULL));
@@ -30,12 +31,11 @@ int main() {
 	game->totalct = 4;  // the 4 middle squares are taken
 	cout << "Size is " << game->size << endl;
 	makeBoard(game, 0, true);
-	printBoard(game->board, game->size);
-
+	printBoard(game, 0);
 
 //test for makeBoard2
-//	char arr[5] = {'3','3','3','3','3'};
-//	makeBoard2(arr,0,5);
+//	char arr[5] = { '3', '3', '3', '3', '3' };
+//	printBoard2(arr, 0, 5);
 //	for (int i = 5 - 1; i >= 0; i--){
 //	    cout << arr[i]<<endl;;
 //	}
@@ -49,19 +49,41 @@ void getSize(int &size) {
 
 }
 
-void printBoard(char **newBoard, int n) {
-
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {
-			if (newBoard[i][j] == 0) {
-				cout << " " << "\t";
-			} else {
-				cout << newBoard[i][j] << "\t";
-			}
-
-		}
-		cout << endl;
+void printFirstRow(int size, int ct){
+	if(ct == 0){
+		cout<<" \t";
 	}
+	if(ct == size){
+		cout<<endl;
+		return;
+	}else{
+		cout<<ct<<" \t";
+		printFirstRow(size, ct+=1);
+	}
+}
+
+void printBoard(GameBoard *game, int ct) {
+	if(ct == 0){
+		printFirstRow(game->size,ct);
+	}
+	if (ct == game->size) {
+		return;
+	} else {
+		cout <<ct << "\t";
+		printBoard2(game->board[ct],0,game->size);
+		printBoard(game, ct += 1);
+	}
+}
+
+void printBoard2(char arr[], int ct, int size) {
+	if (ct == size) {
+		cout << endl;
+		return;
+	} else {
+		cout << arr[ct] << "\t";
+		printBoard2(arr, ct += 1, size);
+	}
+
 }
 
 void makeBoard(GameBoard *game, int ct, bool flag) {
