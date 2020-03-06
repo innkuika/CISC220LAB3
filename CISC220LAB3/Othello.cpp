@@ -70,8 +70,6 @@ int countRow(char arr[], char c, int size, int ct, int num) {
 }
 int countSquare(GameBoard *game, char c, int size, int ct, int num) {
 	if (ct == size) {
-		cout << "inside if" << endl;
-		cout << "num\t" << num << endl;
 		return num;
 	} else {
 		num += countRow(game->board[ct], game->p, game->size, 0, 0);
@@ -79,8 +77,16 @@ int countSquare(GameBoard *game, char c, int size, int ct, int num) {
 	}
 }
 char ckwin(GameBoard *game) {
-	int x;
-	int o;
+	int x = countSquare(game, 'X', game->size, 0, 0);
+	int o = countSquare(game, 'O', game->size, 0, 0);
+
+	if (x == o)
+		return 'T';
+	if (x > o)
+		return 'O';
+	else
+		return 'X';
+
 }
 void getSize(int &size) {
 	int tempSize = rand() % 5 + 5;
