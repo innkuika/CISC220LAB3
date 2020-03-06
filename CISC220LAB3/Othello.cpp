@@ -8,6 +8,11 @@
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
+#include <stdio.h>
+
+
+#include <signal.h>
+#include <float.h>
 using namespace std;
 struct GameBoard {
 	char **board; // the othello board
@@ -21,6 +26,8 @@ void makeBoard(GameBoard *game, int ct, bool flag);
 void makeBoard2(char arr[], int ct, int size);
 void printBoard(GameBoard *game, int ct);
 void printBoard2(char arr[], int ct, int size);
+char ckwin(GameBoard *game);
+int countRow(char arr[], char c, int ct, int size, int num);
 
 int main() {
 	srand(time(NULL));
@@ -33,12 +40,40 @@ int main() {
 	makeBoard(game, 0, true);
 	printBoard(game, 0);
 
-//test for makeBoard2
-//	char arr[5] = { '3', '3', '3', '3', '3' };
+//testing code
+	char arr[5] = { '3', '3', '3', '3', '3' };
+	int a = 0;
+	a = countRow(arr, '3', 5, 0, 0);
+
 //	printBoard2(arr, 0, 5);
 //	for (int i = 5 - 1; i >= 0; i--){
 //	    cout << arr[i]<<endl;;
 //	}
+}
+int countRow(char arr[], char c, int size, int ct, int num) {
+	if (ct == size) {
+		cout << "inside if" << endl;
+		cout <<"num\t" <<num << endl;
+		return num;
+	} else {
+		if (arr[ct] == c) {
+			cout << "inside else" << endl;
+			cout <<"num\t" <<num << endl;
+			cout <<"ct\t" <<ct << endl;
+			cout <<"size\t" <<size << endl;
+
+			num++;
+		}
+		countRow(arr, c, size,ct += 1, num);
+	}
+
+}
+int countSquare(GameBoard *game, char c) {
+
+}
+char ckwin(GameBoard *game) {
+	int x;
+	int o;
 }
 void getSize(int &size) {
 	int tempSize = rand() % 5 + 5;
@@ -112,7 +147,7 @@ void makeBoard2(char arr[], int ct, int size) {
 	if (ct == size) {
 		return;
 	} else {
-		if (arr[ct] != 'X' &&arr[ct]!= 'O' ) {
+		if (arr[ct] != 'X' && arr[ct] != 'O') {
 			arr[ct] = '-';
 		}
 		makeBoard2(arr, ct += 1, size);
