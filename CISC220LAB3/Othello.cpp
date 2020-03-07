@@ -45,6 +45,7 @@ void startGame(GameBoard *game);
 bool placepieceperson(GameBoard *game);
 int flipPieceNum(GameBoard *game, int x, int y, bool flipflag);
 void checkRankandFlipNum(GameBoard *game, Square *s) ;
+Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct);
 
 int main() {
 	srand(time(NULL));
@@ -57,30 +58,40 @@ int main() {
 	makeBoard(game, 0, true);
 	printBoard(game, 0);
 
-	game->p = 'X';
+//	game->p = 'X';
 
-	Square *s = new Square;
-	s->x = 1;
-	s->y = 0;
-	checkRankandFlipNum(game,s);
+//	Square *bs = new Square;
+//	bs->num = -1;
+//	bs->rank = -1;
+//
+//	Square *s = new Square;
+//	s->x = 1;
+//	s->y = 0;
+	//s = findSpot2(game, bs, 1, 0);
+	//int a = flipPieceNum(game, 1, 0, false);
 
-	cout<< s->rank<<endl;
-	cout<< s->num<<endl;
 
-//	startGame(game);
+//	cout<<"a = "<<a<<endl;
+//
+//	cout<< "s rank: "<<s->rank<<endl;
+//	cout<< "s num: "<<s->num<<endl;
+
+//	compplacepiece(game);
+//	printBoard(game, 0);
+
+	startGame(game);
 
 
 	return 0;
 }
 
 void checkRankandFlipNum(GameBoard *game, Square *s) {
-	cout<<"test1"<<endl;
 
 	int size = game->size;
 	int x = s->x;
 	int y = s->y;
 	s->num = flipPieceNum(game, x, y, false);
-	cout<<"test2"<<endl;
+//	cout<<"flipPieceNum: "<<s->num<<endl;
 	if ((game->board[x][y] != '-') || (s->num == 0)) {
 		s->num = -1;
 		return;
@@ -114,7 +125,7 @@ Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct) {
 	if (ct == game->size) {
 		return bestSpot;
 	} else {
-		cout << "best spot num: " << bestSpot->num << endl;
+//		cout << "best spot num: " << bestSpot->num << endl;
 		Square *temp = new Square;
 		temp->x = row;
 		temp->y = ct;
@@ -142,7 +153,7 @@ Square* findSpot(GameBoard *game, Square *bestSpot, int ct) {
 				|| (temp->rank == bestSpot->rank && temp->num > bestSpot->num)) {
 			bestSpot = temp;
 		} else {
-			delete temp;
+			//delete temp;
 		}
 		return findSpot(game, bestSpot, ct += 1);
 	}
@@ -154,6 +165,7 @@ bool compplacepiece(GameBoard *game) {
 	bestSpot->num = -1;
 
 	bestSpot = findSpot(game, bestSpot, 0);
+	cout<<"best spot: "<<bestSpot->x<<bestSpot->y<<endl;
 
 	if (bestSpot->num < 0 || bestSpot->rank < 0) {
 		return false;
@@ -279,12 +291,10 @@ Square* buildArray(Square *start) {
 
 void flipOneDirec(Square *first, GameBoard *game) {
 	if (game->board[first->x][first->y] == first->p) {
-		cout << "test3" << endl;
 		return;
 
 	} else {
-		cout << "test1" << endl;
-		cout << game->board[first->x][first->y] << endl;
+		//cout << game->board[first->x][first->y] << endl;
 		game->board[first->x][first->y] = first->p;
 		first->x += first->xs;
 		first->y += +first->ys;
@@ -297,7 +307,7 @@ void flipAllDirec(Square *arr, GameBoard *game, int ct) {
 	if (ct == 8) {
 		return;
 	} else {
-		cout << ct << "flip: " << arr[ct].flip << endl;
+		//cout << ct << "flip: " << arr[ct].flip << endl;
 		if (arr[ct].flip) {
 			flipOneDirec(&arr[ct], game);
 		}
@@ -313,10 +323,9 @@ int getFlipNumOneDirec(Square *first, GameBoard *game, int num) {
 			|| game->board[first->x][first->y] == '-') {
 
 		if (first->x < 0 || first->x >= game->size || first->y < 0
-				|| first->y >= game->size) {
+				|| first->y >= game->size|| game->board[first->x][first->y] == '-') {
 			num = 0;
-		}
-		if (first->p == game->board[first->x][first->y]) {
+		}else if (first->p == game->board[first->x][first->y]) {
 			first->flip = true;
 		}
 		return num;
@@ -334,6 +343,10 @@ int getFlipNum(Square arr[], GameBoard *game, int num, int ct) {
 		return num;
 	} else {
 		num += getFlipNumOneDirec(&arr[ct], game, 0);
+//		cout<<"direction: "<< ct<<endl;
+//		cout<<"num: "<< getFlipNumOneDirec(&arr[ct], game, 0)<<endl;
+//		cout<<"total num: "<< num<<endl;
+
 		return getFlipNum(arr, game, num, ct += 1);
 	}
 }
@@ -415,7 +428,7 @@ char ckwin(GameBoard *game) {
 }
 void getSize(int &size) {
 //	int tempSize = rand() % 5 + 5;
-	int tempSize = 4;
+	int tempSize = 8;
 	if (tempSize % 2 != 0) {
 		tempSize++;
 	}
@@ -432,7 +445,7 @@ void printFirstRow(int size, int ct) {
 		return;
 	} else {
 		cout << ct << " \t";
-		printFirstRow(size, ct += 1);
+		return printFirstRow(size, ct += 1);
 	}
 }
 
@@ -445,7 +458,7 @@ void printBoard(GameBoard *game, int ct) {
 	} else {
 		cout << ct << "\t";
 		printBoard2(game->board[ct], 0, game->size);
-		printBoard(game, ct += 1);
+		return printBoard(game, ct += 1);
 	}
 }
 
@@ -455,7 +468,7 @@ void printBoard2(char arr[], int ct, int size) {
 		return;
 	} else {
 		cout << arr[ct] << "\t";
-		printBoard2(arr, ct += 1, size);
+		return printBoard2(arr, ct += 1, size);
 	}
 
 }
@@ -478,7 +491,7 @@ void makeBoard(GameBoard *game, int ct, bool flag) {
 			game->board[ct][ct] = 'X';
 		}
 		makeBoard2(game->board[ct], 0, game->size);
-		makeBoard(game, ct += 1, flag);
+		return makeBoard(game, ct += 1, flag);
 	}
 }
 
@@ -489,7 +502,7 @@ void makeBoard2(char arr[], int ct, int size) {
 		if (arr[ct] != 'X' && arr[ct] != 'O') {
 			arr[ct] = '-';
 		}
-		makeBoard2(arr, ct += 1, size);
+		return makeBoard2(arr, ct += 1, size);
 	}
 
 }
