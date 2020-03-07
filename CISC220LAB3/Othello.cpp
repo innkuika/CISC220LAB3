@@ -44,7 +44,7 @@ void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
 void startGame(GameBoard *game);
 bool placepieceperson(GameBoard *game);
 int flipPieceNum(GameBoard *game, int x, int y, bool flipflag);
-void checkRankandFlipNum(GameBoard *game, Square *s) ;
+void checkRankandFlipNum(GameBoard *game, Square *s);
 Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct);
 
 int main() {
@@ -57,31 +57,80 @@ int main() {
 	cout << "Size is " << game->size << endl;
 	makeBoard(game, 0, true);
 	printBoard(game, 0);
-
-//	game->p = 'X';
-
-//	Square *bs = new Square;
-//	bs->num = -1;
-//	bs->rank = -1;
 //
-//	Square *s = new Square;
-//	s->x = 1;
-//	s->y = 0;
-	//s = findSpot2(game, bs, 1, 0);
-	//int a = flipPieceNum(game, 1, 0, false);
-
-
-//	cout<<"a = "<<a<<endl;
+//	game->board[0][0] = 'X';
+//	game->board[0][1] = 'X';
+//	game->board[0][2] = 'X';
+//	game->board[0][3] = 'X';
+//	game->board[0][4] = 'X';
+//	game->board[0][5] = 'X';
+//	game->board[0][6] = 'X';
+//	game->board[0][7] = 'X';
 //
-//	cout<< "s rank: "<<s->rank<<endl;
-//	cout<< "s num: "<<s->num<<endl;
-
-//	compplacepiece(game);
-//	printBoard(game, 0);
+//	game->board[1][0] = 'X';
+//	game->board[1][1] = 'X';
+//	game->board[1][2] = 'X';
+//	game->board[1][3] = 'X';
+//	game->board[1][4] = 'X';
+//	game->board[1][5] = 'X';
+//	game->board[1][6] = 'X';
+//	game->board[1][7] = 'X';
+//
+//	game->board[2][0] = 'X';
+//	game->board[2][1] = 'X';
+//	game->board[2][2] = 'X';
+//	game->board[2][3] = 'X';
+//	game->board[2][4] = 'X';
+//	game->board[2][5] = 'X';
+//	game->board[2][6] = 'X';
+//	game->board[2][7] = 'X';
+//
+//	game->board[3][0] = 'X';
+//	game->board[3][1] = 'X';
+//	game->board[3][2] = 'X';
+//	game->board[3][3] = 'X';
+//	game->board[3][4] = 'X';
+//	game->board[3][5] = 'X';
+//	game->board[3][6] = 'X';
+//	game->board[3][7] = 'X';
+//
+//	game->board[4][0] = 'X';
+//	game->board[4][1] = 'X';
+//	game->board[4][2] = 'X';
+//	game->board[4][3] = 'X';
+//	game->board[4][4] = 'X';
+//	game->board[4][5] = 'X';
+//	game->board[4][6] = 'X';
+//	game->board[4][7] = 'X';
+//
+//	game->board[5][0] = 'X';
+//	game->board[5][1] = 'X';
+//	game->board[5][2] = 'X';
+//	game->board[5][3] = 'X';
+//	game->board[5][4] = 'X';
+//	game->board[5][5] = 'X';
+//	game->board[5][6] = 'X';
+//	game->board[5][7] = 'X';
+//
+//	game->board[6][0] = 'X';
+//	game->board[6][1] = 'X';
+//	game->board[6][2] = 'X';
+//	game->board[6][3] = 'X';
+//	game->board[6][4] = 'X';
+//	game->board[6][5] = 'X';
+//	game->board[6][6] = 'X';
+//	game->board[6][7] = 'X';
+//
+//	game->board[7][0] = 'X';
+//	game->board[7][1] = 'X';
+//	game->board[7][2] = 'X';
+//	game->board[7][3] = 'X';
+//	game->board[7][4] = 'X';
+//	game->board[7][5] = 'X';
+//	game->board[7][6] = 'X';
+//	game->board[7][7] = 'X';
 
 	startGame(game);
-
-
 	return 0;
 }
 
@@ -91,7 +140,6 @@ void checkRankandFlipNum(GameBoard *game, Square *s) {
 	int x = s->x;
 	int y = s->y;
 	s->num = flipPieceNum(game, x, y, false);
-//	cout<<"flipPieceNum: "<<s->num<<endl;
 	if ((game->board[x][y] != '-') || (s->num == 0)) {
 		s->num = -1;
 		return;
@@ -101,22 +149,42 @@ void checkRankandFlipNum(GameBoard *game, Square *s) {
 
 	if ((x == 0 && (y == size - 1 || y == 0))
 			|| (x == size - 1 && (y == size - 1 || y == 0))) {
-		s->rank = 4;
+		s->rank = 40;
 	} else if ((x % 2 == 0 && (y == size - 1 || y == 0))
 			|| (y % 2 == 0 && (x == size - 1 || x == 0))) {
-		s->rank = 3;
+		s->rank = 30;
 	} else if (y == size - 1 || y == 0 || x == size - 1 || x == 0) {
 		if (emptNum < size * size / 2) {
-			s->rank = 2;
+			s->rank = 20;
 		} else {
-			s->rank = 1;
+			s->rank = 10;
 		}
 	} else if (x % 2 == 0 || y % 2 == 0) {
 		if (emptNum < size * size / 2) {
-			s->rank = 1;
+			s->rank = 10;
 		} else {
-			s->rank = 2;
+			s->rank = 20;
 		}
+	}
+
+	if (((x == 0 || x == size - 1) && (y > 0 && y < size - 1))
+			&& ((!(game->board[x][y - 1] == '-')
+					!= !(game->board[x][y + 1] != '-'
+							&& game->board[x][y + 1] != game->p))
+					|| (!(game->board[x][y + 1] == '-')
+							!= !(game->board[x][y - 1] != '-'
+									&& game->board[x][y - 1] != game->p)))) {
+		s->rank = 1;
+	}
+
+	if ((y == 0 || y == size - 1) && (x > 0 && x < size - 1)
+			&& ((!(game->board[x - 1][y] == '-')
+					!= !(game->board[x + 1][y] != '-'
+							&& game->board[x + 1][y] != game->p))
+					|| (!(game->board[x + 1][y] == '-')
+							!= !(game->board[x - 1][y] != '-'
+									&& game->board[x - 1][y] != game->p)))) {
+		s->rank = 1;
 	}
 
 }
@@ -152,8 +220,6 @@ Square* findSpot(GameBoard *game, Square *bestSpot, int ct) {
 		if ((temp->rank > bestSpot->rank)
 				|| (temp->rank == bestSpot->rank && temp->num > bestSpot->num)) {
 			bestSpot = temp;
-		} else {
-			//delete temp;
 		}
 		return findSpot(game, bestSpot, ct += 1);
 	}
@@ -165,7 +231,7 @@ bool compplacepiece(GameBoard *game) {
 	bestSpot->num = -1;
 
 	bestSpot = findSpot(game, bestSpot, 0);
-	cout<<"best spot: "<<bestSpot->x<<bestSpot->y<<endl;
+	cout << "best spot: " << bestSpot->x << bestSpot->y << endl;
 
 	if (bestSpot->num < 0 || bestSpot->rank < 0) {
 		return false;
@@ -292,9 +358,7 @@ Square* buildArray(Square *start) {
 void flipOneDirec(Square *first, GameBoard *game) {
 	if (game->board[first->x][first->y] == first->p) {
 		return;
-
 	} else {
-		//cout << game->board[first->x][first->y] << endl;
 		game->board[first->x][first->y] = first->p;
 		first->x += first->xs;
 		first->y += +first->ys;
@@ -307,7 +371,6 @@ void flipAllDirec(Square *arr, GameBoard *game, int ct) {
 	if (ct == 8) {
 		return;
 	} else {
-		//cout << ct << "flip: " << arr[ct].flip << endl;
 		if (arr[ct].flip) {
 			flipOneDirec(&arr[ct], game);
 		}
@@ -323,9 +386,10 @@ int getFlipNumOneDirec(Square *first, GameBoard *game, int num) {
 			|| game->board[first->x][first->y] == '-') {
 
 		if (first->x < 0 || first->x >= game->size || first->y < 0
-				|| first->y >= game->size|| game->board[first->x][first->y] == '-') {
+				|| first->y >= game->size
+				|| game->board[first->x][first->y] == '-') {
 			num = 0;
-		}else if (first->p == game->board[first->x][first->y]) {
+		} else if (first->p == game->board[first->x][first->y]) {
 			first->flip = true;
 		}
 		return num;
@@ -343,10 +407,6 @@ int getFlipNum(Square arr[], GameBoard *game, int num, int ct) {
 		return num;
 	} else {
 		num += getFlipNumOneDirec(&arr[ct], game, 0);
-//		cout<<"direction: "<< ct<<endl;
-//		cout<<"num: "<< getFlipNumOneDirec(&arr[ct], game, 0)<<endl;
-//		cout<<"total num: "<< num<<endl;
-
 		return getFlipNum(arr, game, num, ct += 1);
 	}
 }
@@ -397,8 +457,10 @@ bool placepieceperson(GameBoard *game) {
 
 int countRow(char arr[], char c, int size, int ct, int num) {
 	if (ct == size) {
+
 		return num;
 	} else {
+
 		if (arr[ct] == c) {
 			num++;
 		}
@@ -410,7 +472,8 @@ int countSquare(GameBoard *game, char c, int size, int ct, int num) {
 	if (ct == size) {
 		return num;
 	} else {
-		num += countRow(game->board[ct], game->p, game->size, 0, 0);
+
+		num += countRow(game->board[ct], c, game->size, 0, 0);
 		return countSquare(game, c, size, ct += 1, num);
 	}
 }
@@ -421,9 +484,9 @@ char ckwin(GameBoard *game) {
 	if (x == o)
 		return 'T';
 	if (x > o)
-		return 'O';
-	else
 		return 'X';
+	else
+		return 'O';
 
 }
 void getSize(int &size) {
