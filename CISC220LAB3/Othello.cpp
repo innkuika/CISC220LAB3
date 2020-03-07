@@ -168,21 +168,21 @@ void checkRankandFlipNum(GameBoard *game, Square *s) {
 	}
 
 	if (((x == 0 || x == size - 1) && (y > 0 && y < size - 1))
-			&& ((!(game->board[x][y - 1] == '-')
-					!= !(game->board[x][y + 1] != '-'
+			&& (((game->board[x][y - 1] == '-')
+					&&(game->board[x][y + 1] != '-'
 							&& game->board[x][y + 1] != game->p))
-					|| (!(game->board[x][y + 1] == '-')
-							!= !(game->board[x][y - 1] != '-'
+					|| ((game->board[x][y + 1] == '-')
+							&&(game->board[x][y - 1] != '-'
 									&& game->board[x][y - 1] != game->p)))) {
 		s->rank = 1;
 	}
 
 	if ((y == 0 || y == size - 1) && (x > 0 && x < size - 1)
-			&& ((!(game->board[x - 1][y] == '-')
-					!= !(game->board[x + 1][y] != '-'
+			&& (((game->board[x - 1][y] == '-')
+					&& (game->board[x + 1][y] != '-'
 							&& game->board[x + 1][y] != game->p))
-					|| (!(game->board[x + 1][y] == '-')
-							!= !(game->board[x - 1][y] != '-'
+					|| ((game->board[x + 1][y] == '-')
+							&& (game->board[x - 1][y] != '-'
 									&& game->board[x - 1][y] != game->p)))) {
 		s->rank = 1;
 	}
@@ -226,6 +226,10 @@ Square* findSpot(GameBoard *game, Square *bestSpot, int ct) {
 }
 
 bool compplacepiece(GameBoard *game) {
+	int dash = countSquare(game, '-', game->size, 0, 0);
+	if (dash == 0) {
+		return false;
+	}
 	Square *bestSpot = new Square;
 	bestSpot->rank = -1;
 	bestSpot->num = -1;
@@ -430,6 +434,10 @@ int flipPieceNum(GameBoard *game, int x, int y, bool flipflag) {
 }
 
 bool placepieceperson(GameBoard *game) {
+	int dash = countSquare(game, '-', game->size, 0, 0);
+	if (dash == 0) {
+		return false;
+	}
 	int x;
 	int y;
 	cout << game->p << " Enter the x coordinate: " << endl;
@@ -491,7 +499,7 @@ char ckwin(GameBoard *game) {
 }
 void getSize(int &size) {
 //	int tempSize = rand() % 5 + 5;
-	int tempSize = 8;
+	int tempSize = 6;
 	if (tempSize % 2 != 0) {
 		tempSize++;
 	}
@@ -517,6 +525,8 @@ void printBoard(GameBoard *game, int ct) {
 		printFirstRow(game->size, ct);
 	}
 	if (ct == game->size) {
+		cout << endl;
+		cout << endl;
 		return;
 	} else {
 		cout << ct << "\t";
