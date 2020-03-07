@@ -4,7 +4,7 @@
  *  Created on: Mar 4, 2020
  *  Author: jessicawu
  */
-
+//get random size
 #include <iostream>
 #include <stdlib.h>
 #include <time.h>
@@ -44,6 +44,7 @@ void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
 void startGame(GameBoard *game);
 bool placepieceperson(GameBoard *game);
 int flipPieceNum(GameBoard *game, int x, int y, bool flipflag);
+void checkRankandFlipNum(GameBoard *game, Square *s) ;
 
 int main() {
 	srand(time(NULL));
@@ -57,36 +58,34 @@ int main() {
 	printBoard(game, 0);
 
 	game->p = 'X';
-	placepieceperson(game);
-	printBoard(game, 0);
 
-//testing code
+	Square *s = new Square;
+	s->x = 1;
+	s->y = 0;
+	checkRankandFlipNum(game,s);
 
-//
-//	int a = countSquare(game, '-', game->size, 0, 0);
-//	cout << a << endl;
+	cout<< s->rank<<endl;
+	cout<< s->num<<endl;
 
-//	char arr[5] = { '3', '3', '3', '3', '3' };
-//	int a = 0;
-//	a = countRow(arr, '3', 5, 0, 0);
-//	cout << "A: " << a << endl;
+//	startGame(game);
 
-//	printBoard2(arr, 0, 5);
-//	for (int i = 5 - 1; i >= 0; i--){
-//	    cout << arr[i]<<endl;;
-//	}
 
-//	cout << "inside else" << endl;
-//	cout << "num\t" << num << endl;
-//	cout << "ct\t" << ct << endl;
-//	cout << "size\t" << size << endl;
 	return 0;
 }
 
 void checkRankandFlipNum(GameBoard *game, Square *s) {
+	cout<<"test1"<<endl;
+
 	int size = game->size;
 	int x = s->x;
 	int y = s->y;
+	s->num = flipPieceNum(game, x, y, false);
+	cout<<"test2"<<endl;
+	if ((game->board[x][y] != '-') || (s->num == 0)) {
+		s->num = -1;
+		return;
+	}
+
 	int emptNum = countSquare(game, '-', size, 0, 0);
 
 	if ((x == 0 && (y == size - 1 || y == 0))
@@ -108,10 +107,6 @@ void checkRankandFlipNum(GameBoard *game, Square *s) {
 			s->rank = 2;
 		}
 	}
-	s->num = flipPieceNum(game, x, y, false);
-	if (game->board[x][y] != '-') {
-		s->num = -1;
-	}
 
 }
 
@@ -119,9 +114,11 @@ Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct) {
 	if (ct == game->size) {
 		return bestSpot;
 	} else {
+		cout << "best spot num: " << bestSpot->num << endl;
 		Square *temp = new Square;
 		temp->x = row;
 		temp->y = ct;
+
 		checkRankandFlipNum(game, temp);
 
 		if ((temp->rank > bestSpot->rank)
@@ -158,9 +155,9 @@ bool compplacepiece(GameBoard *game) {
 
 	bestSpot = findSpot(game, bestSpot, 0);
 
-	if(bestSpot->num < 0 ||bestSpot->rank < 0 ){
+	if (bestSpot->num < 0 || bestSpot->rank < 0) {
 		return false;
-	}else{
+	} else {
 		flipPieceNum(game, bestSpot->x, bestSpot->y, true);
 		return true;
 	}
@@ -387,19 +384,9 @@ bool placepieceperson(GameBoard *game) {
 
 int countRow(char arr[], char c, int size, int ct, int num) {
 	if (ct == size) {
-		cout << "inside if" << endl;
-		cout << "num\t" << num << endl;
-		cout << "ct\t" << ct << endl;
-		cout << "size\t" << size << endl;
 		return num;
 	} else {
-		cout << "inside else" << endl;
-		cout << "num\t" << num << endl;
-		cout << "ct\t" << ct << endl;
-		cout << "size\t" << size << endl;
-		cout << arr[ct] << c << endl;
 		if (arr[ct] == c) {
-
 			num++;
 		}
 		return countRow(arr, c, size, ct += 1, num);
@@ -427,7 +414,8 @@ char ckwin(GameBoard *game) {
 
 }
 void getSize(int &size) {
-	int tempSize = rand() % 5 + 5;
+//	int tempSize = rand() % 5 + 5;
+	int tempSize = 4;
 	if (tempSize % 2 != 0) {
 		tempSize++;
 	}
