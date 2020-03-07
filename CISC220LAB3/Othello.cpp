@@ -27,6 +27,8 @@ struct Square {
 	int xs; //x step
 	int ys; //y step
 	bool flip; //T if can flip
+	int rank; //for AI to determine priority
+	int num; //how many chess can be flipped if placed here, -1 if this spot has already been taken
 };
 
 void getSize(int &size);
@@ -41,7 +43,7 @@ bool compplacepiece(GameBoard *game);
 void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
 void startGame(GameBoard *game);
 bool placepieceperson(GameBoard *game);
-int flipPieceNum(GameBoard *game, int x, int y);
+int flipPieceNum(GameBoard *game, int x, int y, bool flipflag);
 
 int main() {
 	srand(time(NULL));
@@ -79,6 +81,90 @@ int main() {
 //	cout << "ct\t" << ct << endl;
 //	cout << "size\t" << size << endl;
 	return 0;
+}
+
+void checkRankandFlipNum(GameBoard *game, Square *s) {
+	int size = game->size;
+	int x = s->x;
+	int y = s->y;
+	int emptNum = countSquare(game, '-', size, 0, 0);
+
+	if ((x == 0 && (y == size - 1 || y == 0))
+			|| (x == size - 1 && (y == size - 1 || y == 0))) {
+		s->rank = 4;
+	} else if ((x % 2 == 0 && (y == size - 1 || y == 0))
+			|| (y % 2 == 0 && (x == size - 1 || x == 0))) {
+		s->rank = 3;
+	} else if (y == size - 1 || y == 0 || x == size - 1 || x == 0) {
+		if (emptNum < size * size / 2) {
+			s->rank = 2;
+		} else {
+			s->rank = 1;
+		}
+	} else if (x % 2 == 0 || y % 2 == 0) {
+		if (emptNum < size * size / 2) {
+			s->rank = 1;
+		} else {
+			s->rank = 2;
+		}
+	}
+	s->num = flipPieceNum(game, x, y, false);
+	if (game->board[x][y] != '-') {
+		s->num = -1;
+	}
+
+}
+
+Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct) {
+	if (ct == game->size) {
+		return bestSpot;
+	} else {
+		Square *temp = new Square;
+		temp->x = row;
+		temp->y = ct;
+		checkRankandFlipNum(game, temp);
+
+		if ((temp->rank > bestSpot->rank)
+				|| (temp->rank == bestSpot->rank && temp->num > bestSpot->num)) {
+			bestSpot = temp;
+		} else {
+			delete temp;
+		}
+		return findSpot2(game, bestSpot, row, ct += 1);
+	}
+}
+
+Square* findSpot(GameBoard *game, Square *bestSpot, int ct) {
+	if (ct == game->size) {
+		return bestSpot;
+	} else {
+		Square *temp = new Square;
+		temp = findSpot2(game, bestSpot, ct, 0);
+
+		if ((temp->rank > bestSpot->rank)
+				|| (temp->rank == bestSpot->rank && temp->num > bestSpot->num)) {
+			bestSpot = temp;
+		} else {
+			delete temp;
+		}
+		return findSpot(game, bestSpot, ct += 1);
+	}
+}
+
+bool compplacepiece(GameBoard *game) {
+	Square *bestSpot = new Square;
+	bestSpot->rank = -1;
+	bestSpot->num = -1;
+
+	bestSpot = findSpot(game, bestSpot, 0);
+
+	if(bestSpot->num < 0 ||bestSpot->rank < 0 ){
+		return false;
+	}else{
+		flipPieceNum(game, bestSpot->x, bestSpot->y, true);
+		return true;
+	}
+
 }
 void setArrToInitial(Square *start, Square arr[]) {
 	arr[0].p = start->p;
@@ -190,19 +276,18 @@ Square* buildArray(Square *start) {
 	arr[6].flip = false;
 	arr[7].flip = false;
 
-
 	return arr;
 
 }
 
 void flipOneDirec(Square *first, GameBoard *game) {
 	if (game->board[first->x][first->y] == first->p) {
-		cout<<"test3"<<endl;
+		cout << "test3" << endl;
 		return;
 
 	} else {
-		cout<<"test1"<<endl;
-		cout<<game->board[first->x][first->y]<<endl;
+		cout << "test1" << endl;
+		cout << game->board[first->x][first->y] << endl;
 		game->board[first->x][first->y] = first->p;
 		first->x += first->xs;
 		first->y += +first->ys;
@@ -215,7 +300,7 @@ void flipAllDirec(Square *arr, GameBoard *game, int ct) {
 	if (ct == 8) {
 		return;
 	} else {
-		cout<<ct<<"flip: " <<arr[ct].flip<<endl;
+		cout << ct << "flip: " << arr[ct].flip << endl;
 		if (arr[ct].flip) {
 			flipOneDirec(&arr[ct], game);
 		}
@@ -234,7 +319,7 @@ int getFlipNumOneDirec(Square *first, GameBoard *game, int num) {
 				|| first->y >= game->size) {
 			num = 0;
 		}
-		if(first->p == game->board[first->x][first->y]) {
+		if (first->p == game->board[first->x][first->y]) {
 			first->flip = true;
 		}
 		return num;
@@ -266,12 +351,11 @@ int flipPieceNum(GameBoard *game, int x, int y, bool flipflag) {
 	int num = getFlipNum(arr, game, 0, 0);
 
 	if (flipflag && num != 0) {
-
 		setArrToInitial(start, arr);
 		game->board[x][y] = game->p;
 		flipAllDirec(arr, game, 0);
-		cout<<"test2"<<endl;
 	}
+	delete[] arr;
 	return num;
 }
 
@@ -283,7 +367,8 @@ bool placepieceperson(GameBoard *game) {
 	cout << game->p << " Enter the y coordinate: " << endl;
 	cin >> y;
 
-	if (x < 0 || x >= game->size || y < 0 || y >= game->size) {
+	if (x < 0 || x >= game->size || y < 0 || y >= game->size
+			|| game->board[x][y] != '-') {
 		cout << game->p << " forfeits turn" << endl;
 		return false;
 	}
@@ -421,87 +506,87 @@ void makeBoard2(char arr[], int ct, int size) {
 
 }
 
-//void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag) {
-//	bool s1 = true;
-//	bool s2 = true;
-//	if (fp1 && fp2 && (s1 || s2)) {
-//		if (whoplaysfirstflag) {
-//			game->p = 'X';
-//			s1 = placepieceperson(game);
-//			printBoard(game, 0);
-//			game->p = 'O';
-//			s2 = placepieceperson(game);
-//			printBoard(game, 0);
-//		} else {
-//			game->p = 'O';
-//			s1 = placepieceperson(game);
-//			printBoard(game, 0);
-//			game->p = 'X';
-//			s2 = placepieceperson(game);
-//			printBoard(game, 0);
-//		}
-//	} else if (fp1 == false && fp2 == false && (s1 || s2)) {
-//		game->p = 'X';
-//		s1 = compplacepiece(game);
-//		printBoard(game, 0);
-//		game->p = 'O';
-//		s2 = compplacepiece(game);
-//		printBoard(game, 0);
-//	} else {
-//		if (whoplaysfirstflag) {
-//			game->p = 'X';
-//			s1 = placepieceperson(game);
-//			printBoard(game, 0);
-//			game->p = 'O';
-//			s2 = compplacepiece(game);
-//			printBoard(game, 0);
-//		} else {
-//			game->p = 'X';
-//			s1 = compplacepiece(game);
-//			printBoard(game, 0);
-//			game->p = 'O';
-//			s2 = placepieceperson(game);
-//			printBoard(game, 0);
-//		}
-//	}
-//	if (s1 == false && s2 == false
-//			|| game->totalct == game->size * game->size) {
-//		cout << "Game over" << endl;
-//		printBoard(game, 0);
-//		return;
-//	}
-//	playGame(fp1, fp2, game, whoplaysfirstflag);
-//
-//}
-//void startGame(GameBoard *game) {
-//	cout << "How many players? (0,1, or 2)" << endl;
-//	int numplayers;
-//	cin >> numplayers;
-//	if (numplayers == 0) {
-//		playGame(false, false, game, true);
-//	} else if (numplayers == 1) {
-//		bool whoplaysfirstflag;
-//		rand() % 2 == 0 ? whoplaysfirstflag = true : whoplaysfirstflag = false;
-//		playGame(true, false, game, whoplaysfirstflag);
-//	} else
-//		playGame(true, true, game, true);
-//	char w = ckwin(game);
-//	if (w != 'T') {
-//		cout << w << " WON!!!!  " << endl;
-//	} else {
-//		cout << "Tie game. " << endl;
-//	}
-//	string s;
-//	cout << "Play again? (Y or N)" << endl;
-//	cin >> s;
-//	if (s == "Y") {
-//		game->totalct = 4;
-//		makeBoard(game, 0, false);
-//		cout << "STARTING OVER" << endl;
-//		printBoard(game, 0);
-//		startGame(game);
-//	} else {
-//		cout << "THANKS FOR PLAYING!" << endl;
-//	}
-//}
+void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag) {
+	bool s1 = true;
+	bool s2 = true;
+	if (fp1 && fp2 && (s1 || s2)) {
+		if (whoplaysfirstflag) {
+			game->p = 'X';
+			s1 = placepieceperson(game);
+			printBoard(game, 0);
+			game->p = 'O';
+			s2 = placepieceperson(game);
+			printBoard(game, 0);
+		} else {
+			game->p = 'O';
+			s1 = placepieceperson(game);
+			printBoard(game, 0);
+			game->p = 'X';
+			s2 = placepieceperson(game);
+			printBoard(game, 0);
+		}
+	} else if (fp1 == false && fp2 == false && (s1 || s2)) {
+		game->p = 'X';
+		s1 = compplacepiece(game);
+		printBoard(game, 0);
+		game->p = 'O';
+		s2 = compplacepiece(game);
+		printBoard(game, 0);
+	} else {
+		if (whoplaysfirstflag) {
+			game->p = 'X';
+			s1 = placepieceperson(game);
+			printBoard(game, 0);
+			game->p = 'O';
+			s2 = compplacepiece(game);
+			printBoard(game, 0);
+		} else {
+			game->p = 'X';
+			s1 = compplacepiece(game);
+			printBoard(game, 0);
+			game->p = 'O';
+			s2 = placepieceperson(game);
+			printBoard(game, 0);
+		}
+	}
+	if ((s1 == false && s2 == false)
+			|| game->totalct == game->size * game->size) {
+		cout << "Game over" << endl;
+		printBoard(game, 0);
+		return;
+	}
+	playGame(fp1, fp2, game, whoplaysfirstflag);
+
+}
+void startGame(GameBoard *game) {
+	cout << "How many players? (0,1, or 2)" << endl;
+	int numplayers;
+	cin >> numplayers;
+	if (numplayers == 0) {
+		playGame(false, false, game, true);
+	} else if (numplayers == 1) {
+		bool whoplaysfirstflag;
+		rand() % 2 == 0 ? whoplaysfirstflag = true : whoplaysfirstflag = false;
+		playGame(true, false, game, whoplaysfirstflag);
+	} else
+		playGame(true, true, game, true);
+	char w = ckwin(game);
+	if (w != 'T') {
+		cout << w << " WON!!!!  " << endl;
+	} else {
+		cout << "Tie game. " << endl;
+	}
+	string s;
+	cout << "Play again? (Y or N)" << endl;
+	cin >> s;
+	if (s == "Y") {
+		game->totalct = 4;
+		makeBoard(game, 0, false);
+		cout << "STARTING OVER" << endl;
+		printBoard(game, 0);
+		startGame(game);
+	} else {
+		cout << "THANKS FOR PLAYING!" << endl;
+	}
+}
 
