@@ -96,7 +96,12 @@ bool compplacepiece(GameBoard *game);
  * the location on the board where, if it places its piece, the most other pieces will be fixed.
  */
 void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
-
+/* Parameter: fp1(boolean),fp2(boolean), a pointer to the game pieces, an element to determine who play first(boolean).
+ *
+ * Return: None.
+ *
+ * This function is used to call all functions and let the user play the game
+ */
 void startGame(GameBoard *game);
 /* Parameter: a pointer to the current game piece.
  *
