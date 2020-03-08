@@ -96,6 +96,7 @@ bool compplacepiece(GameBoard *game);
  * the location on the board where, if it places its piece, the most other pieces will be fixed.
  */
 void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
+
 void startGame(GameBoard *game);
 /* Parameter: a pointer to the current game piece.
  *
@@ -114,7 +115,20 @@ bool placepieceperson(GameBoard *game);
  * flips all possible pieces in all possible directions
  */
 int flipPieceNum(GameBoard *game, int x, int y, bool flipflag);
+/* Parameter: a pointer to the current game piece, a num(int), a num(int), a element to show if this space was allocated.
+ *
+ * Return: int.
+ *
+ * This function is count the total number which was flipped.
+ */
 void checkRankandFlipNum(GameBoard *game, Square *s);
+/* Parameter: a pointer to the current game piece, a pointer to the square.
+ *
+ * Return: None.
+ *
+ * This function is used to check the rank of the square and if all parts of the new chart was filled
+ * with '-',
+ */
 Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct);
 
 int main() {
