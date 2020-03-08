@@ -49,7 +49,13 @@ void makeBoard(GameBoard *game, int ct, bool flag);
  * for each row being created.
  */
 void makeBoard2(char arr[], int ct, int size);
-
+/* Parameter:  a pointer to the game, the current count (int), and a flag indicating whether
+ * this board was already allocated or needs to be allocated for the first time(boolean).
+ *
+ * Return: None.
+ *
+ * This function is used to fill the rest space of board where does not have 'O' or 'X' with '-'.
+ */
 void printBoard(GameBoard *game, int ct);
 void printBoard2(char arr[], int ct, int size);
 char ckwin(GameBoard *game);
