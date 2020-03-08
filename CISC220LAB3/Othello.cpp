@@ -74,9 +74,19 @@ char ckwin(GameBoard *game);
  * winner.
  */
 int countRow(char arr[], char c, int ct, int size, int num);
-
+/* Parameter: a pointer to the current game piece(char), a character(char), the count(int), the size(int), num(int).
+ *
+ * Return: int.
+ *
+ * This function is used to count how many pieces('O' and 'X') the board has for each row.
+ */
 int countSquare(GameBoard *game, char c, int size, int ct, int num);
-
+/* Parameter: a pointer to the current game piece(char), a character(char), the count(int), the size(int), num(int).
+ *
+ * Return: int.
+ *
+ * This function is used to count how many pieces('O' and 'X') the board has for the whole board.
+ */
 bool compplacepiece(GameBoard *game);
 /* Parameter: a pointer to the current game piece.
  *
