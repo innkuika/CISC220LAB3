@@ -66,9 +66,25 @@ void printBoard(GameBoard *game, int ct);
  */
 void printBoard2(char arr[], int ct, int size);
 char ckwin(GameBoard *game);
+/* Parameter: a pointer to the current game piece and the count(int).
+ *
+ * Return: char.
+ *
+ * This function is used to check the number of pieces, compare the result and print who is the
+ * winner.
+ */
 int countRow(char arr[], char c, int ct, int size, int num);
+
 int countSquare(GameBoard *game, char c, int size, int ct, int num);
+
 bool compplacepiece(GameBoard *game);
+/* Parameter: a pointer to the current game piece.
+ *
+ * Return: Boolean.
+ *
+ * This function is used for when the computer is playing as one (or both) of the players. It determines
+ * the location on the board where, if it places its piece, the most other pieces will be fixed.
+ */
 void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
 void startGame(GameBoard *game);
 bool placepieceperson(GameBoard *game);
