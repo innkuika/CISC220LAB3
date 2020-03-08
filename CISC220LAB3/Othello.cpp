@@ -88,6 +88,15 @@ bool compplacepiece(GameBoard *game);
 void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
 void startGame(GameBoard *game);
 bool placepieceperson(GameBoard *game);
+/* Parameter: a pointer to the current game piece.
+ *
+ * Return: Boolean.
+ *
+ * This function is for a human placing a piece on the board. If the human chooses a square that is not located on the
+ * board, it alerts the human that they forfeited a turn and returns false. If the human chooses a square that does not
+ * result in any flipping, it alerts the human that they forfeited a turn and returns false. Otherwise it places the piece and
+ * flips all possible pieces in all possible directions
+ */
 int flipPieceNum(GameBoard *game, int x, int y, bool flipflag);
 void checkRankandFlipNum(GameBoard *game, Square *s);
 Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct);
