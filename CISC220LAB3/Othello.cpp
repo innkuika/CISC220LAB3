@@ -57,6 +57,13 @@ void makeBoard2(char arr[], int ct, int size);
  * This function is used to fill the rest space of board where does not have 'O' or 'X' with '-'.
  */
 void printBoard(GameBoard *game, int ct);
+/* Parameter: a pointer to the current game piece and the count(int).
+ *
+ * Return: None.
+ *
+ * This function is used to indicate which row is being printed out. It
+ * prints out the board, as seen in the output.
+ */
 void printBoard2(char arr[], int ct, int size);
 char ckwin(GameBoard *game);
 int countRow(char arr[], char c, int ct, int size, int num);
