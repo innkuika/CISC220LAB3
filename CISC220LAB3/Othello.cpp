@@ -70,8 +70,8 @@ char ckwin(GameBoard *game);
  *
  * Return: char.
  *
- * This function is used to check the number of pieces, compare the result and print who is the
- * winner.
+ * This function is used to check the number of pieces, compare the result and
+ * print who is the winner.
  */
 int countRow(char arr[], char c, int ct, int size, int num);
 /* Parameter: a pointer to the current game piece(char), a character(char), the count(int), the size(int), num(int).
@@ -97,6 +97,12 @@ bool compplacepiece(GameBoard *game);
  */
 void playGame(bool fp1, bool fp2, GameBoard *game, bool whoplaysfirstflag);
 void startGame(GameBoard *game);
+/* Parameter: a pointer to the current game piece.
+ *
+ * Return: None.
+ *
+ * This function is used to start the game.
+ */
 bool placepieceperson(GameBoard *game);
 /* Parameter: a pointer to the current game piece.
  *
