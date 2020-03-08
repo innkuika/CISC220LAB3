@@ -32,6 +32,13 @@ struct Square {
 };
 
 void getSize(int &size);
+/* Parameter: int. This int will take the input from the players.
+ *
+ * Return: None.
+ *
+ * This function is used to take a number to be the size of the board, and it is only accept the even number
+ * If it receives a odd number, it will round it to the next even number.
+ */
 void makeBoard(GameBoard *game, int ct, bool flag);
 void makeBoard2(char arr[], int ct, int size);
 void printBoard(GameBoard *game, int ct);
