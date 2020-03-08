@@ -65,6 +65,12 @@ void printBoard(GameBoard *game, int ct);
  * prints out the board, as seen in the output.
  */
 void printBoard2(char arr[], int ct, int size);
+/* Parameter: an array, count(int), size(int).
+ *
+ * Return: None.
+ *
+ * It should print out the board for the player's view.
+ */
 char ckwin(GameBoard *game);
 /* Parameter: a pointer to the current game piece and the count(int).
  *
