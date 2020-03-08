@@ -141,7 +141,12 @@ void checkRankandFlipNum(GameBoard *game, Square *s);
  * with '-',
  */
 Square* findSpot2(GameBoard *game, Square *bestSpot, int row, int ct);
-
+/* Parameter: a pointer to the game piece, a pointer to the square, row number(int), count(int).
+ *
+ * Return: a pointer.
+ *
+ * It is used to find the spot which has higher possibility to win.
+ */
 int main() {
 	srand(time(NULL));
 	int size = 0;
